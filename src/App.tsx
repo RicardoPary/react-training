@@ -1,4 +1,4 @@
-import React, {Component} from 'react';
+import React, {useState} from 'react';
 import logo from './logo.svg';
 import './App.css';
 
@@ -7,17 +7,26 @@ import Person from "./Person/Person";
 
 const App = () => {
 
-    let state = {
+    let [personsState, setPersonsState] = useState({
         persons: [
             {name: 'Max', age: 28},
             {name: 'Manu', age: 29},
-            {name: "Ricardo", age: 22}
+            {name: "Ricardo", age: 10000000000000}
         ],
         otherState: 'Some other value'
-    };
+    });
+
 
     let switchNameHandler = () => {
         console.log('Was clicked!');
+        setPersonsState({
+            persons: [
+                {name: 'Max', age: 3333333},
+                {name: 'Manu', age: 55555},
+                {name: "Ricardo", age: 100}
+            ],
+            otherState: 'Some other value'
+        });
     };
 
     return (
@@ -34,9 +43,9 @@ const App = () => {
                 </a>
             </header>
             <button onClick={switchNameHandler}>Switch name</button>
-            <Person name={state.persons[0].name} age={state.persons[0].age}></Person>
-            <Person name="Ricardo" age="23">My hobbies: Play</Person>
-            <Person name="Juan" age="34"></Person>
+            <Person name={personsState.persons[0].name} age={personsState.persons[0].age}></Person>
+            <Person name={personsState.persons[1].name} age={personsState.persons[1].age}>My hobbies: Play</Person>
+            <Person name={personsState.persons[2].name} age={personsState.persons[2].age}></Person>
         </div>
     );
 }
