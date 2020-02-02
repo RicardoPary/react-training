@@ -9,11 +9,12 @@ const App = () => {
 
     let [personsState, setPersonsState] = useState({
         persons: [
-            {name: 'Max', age: 28},
-            {name: 'Manu', age: 29},
-            {name: "Ricardo", age: 10000000000000}
+            {id: 123, name: 'Max', age: 28},
+            {id: 456, name: 'Manu', age: 29},
+            {id: 789, name: "Ricardo", age: 10000000000000}
         ],
-        otherState: 'Some other value'
+        otherState: 'Some other value',
+        showPersons: false
     });
 
 
@@ -21,32 +22,63 @@ const App = () => {
         console.log('Was clicked!');
         setPersonsState({
             persons: [
-                {name: newName, age: 3333333},
-                {name: 'Manu', age: 55555},
-                {name: "Ricardo", age: 100}
+                {id: 123, name: 'Max', age: 28},
+                {id: 456, name: 'Manu', age: 29},
+                {id: 789, name: "Ricardo", age: 10000000000000}
             ],
-            otherState: 'Some other value'
+            otherState: 'Some other value',
+            showPersons: false
         });
     };
 
-    let nameChangedHandler = (event: any) => {
-        setPersonsState({
-            persons: [
-                {name: 'sss', age: 3333333},
-                {name: event.target.value, age: 55555},
-                {name: "Ricardo", age: 1111111111111111111111111}
-            ],
-            otherState: 'Some other value'
-        });
+    let nameChangedHandler = (event: any, id: any) => {
+
+        const personIndex =personsState.persons.findIndex(p => p.id === id);
+        const person = {...personsState.persons[personIndex]};
+        person.name = event.target.value;
+        const persons = [...personsState.persons];
+        persons[personIndex] = person;
+
+        setPersonsState({...personsState, persons: persons});
+    };
+
+    let deletePersonHandler = (personIndex: any) => {
+        const persons = [...personsState.persons];
+        persons.splice(personIndex, 1);
+        setPersonsState({...personsState, persons: persons});
+    };
+
+    let togglePersonHandler = () => {
+        const doesShow = personsState.showPersons;
+        setPersonsState({...personsState, showPersons: !doesShow});
     };
 
     const style = {
-      backgroundColor: 'white',
-      font: 'inherit',
-      border: '1px solid blue',
-      padding: '8px',
-      cursor: 'pointer'
+        backgroundColor: 'white',
+        font: 'inherit',
+        border: '1px solid blue',
+        padding: '8px',
+        cursor: 'pointer'
     };
+
+    let persons = null;
+
+    if (personsState.showPersons) {
+        persons = (
+            <div>
+                {
+                    personsState.persons.map((person: any, index) => {
+                        return <Person
+                            name={person.name}
+                            age={person.age}
+                            key={person.id}
+                            changed={(event: any) => nameChangedHandler(event, person.id)}
+                            click={() => deletePersonHandler(index)}>My hobbies: Play</Person>
+                    })
+                }
+            </div>
+        );
+    }
 
     return (
         <div className="App">
@@ -63,18 +95,9 @@ const App = () => {
             </header>
             <button
                 style={style}
-                onClick={() => switchNameHandler('Ricardooooooooooooooo')}>Switch name</button>
-            <Person
-                name={personsState.persons[0].name}
-                age={personsState.persons[0].age}></Person>
-            <Person
-                name={personsState.persons[1].name}
-                age={personsState.persons[1].age}
-                click={switchNameHandler}
-                changed={nameChangedHandler}>My hobbies: Play</Person>
-            <Person
-                name={personsState.persons[2].name}
-                age={personsState.persons[2].age}></Person>
+                onClick={togglePersonHandler}>Switch name
+            </button>
+            {persons}
         </div>
     );
 }
